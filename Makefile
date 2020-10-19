@@ -24,6 +24,15 @@ main_pkgfiles := $(call pkgfiles_fn,main)
 universe_pkgfiles := $(main_pkgfiles) $(call pkgfiles_fn,universe)
 staging_pkgfiles := $(universe_pkgfiles) $(call pkgfiles_fn,staging)
 
+# IoT "special release"
+iot_patterns := org.thingpedia.iot.* io.home-assistant*
+iot_devices := $(foreach pat,$(iot_patterns),$(foreach d,$(wildcard main/$(pat)/manifest.tt),$(patsubst %/manifest.tt,%,$(d))))
+iot_pkgfiles = $(foreach d,$(iot_devices),$(d)/package.json)
+
+# release with custom devices
+custom_devices ?= $(builtin_devices)
+custom_pkgfiles ?= $(builtin_pkgfiles)
+
 # hyperparameters that can be overridden on the cmdline
 template_file ?= thingtalk/en/dialogue.genie
 dataset_file ?= eval/$(release)/dataset.tt
